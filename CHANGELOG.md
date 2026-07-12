@@ -7,3 +7,4 @@
 - 2026-07-12: Fix mobile layout padding
 - 2026-07-12: Update README with deployment instructions
 - 2026-07-12: Refactor notification rendering
+- 2026-07-13: Fix profile avatar alignment issue
