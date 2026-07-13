@@ -8,3 +8,4 @@
 - 2026-07-12: Update README with deployment instructions
 - 2026-07-12: Refactor notification rendering
 - 2026-07-13: Fix profile avatar alignment issue
+- 2026-07-13: Add like and comment functionality
