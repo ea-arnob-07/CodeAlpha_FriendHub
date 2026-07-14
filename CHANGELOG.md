@@ -9,3 +9,4 @@
 - 2026-07-12: Refactor notification rendering
 - 2026-07-13: Fix profile avatar alignment issue
 - 2026-07-13: Add like and comment functionality
+- 2026-07-14: Add error handling to AJAX requests
