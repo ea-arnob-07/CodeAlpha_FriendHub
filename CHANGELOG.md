@@ -12,3 +12,4 @@
 - 2026-07-14: Add error handling to AJAX requests
 - 2026-07-14: Fix bug in user follow API
 - 2026-07-15: Fix comment deletion permission
+- 2026-07-15: Update responsive design breakpoints
