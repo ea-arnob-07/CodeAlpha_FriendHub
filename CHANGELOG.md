@@ -14,3 +14,4 @@
 - 2026-07-15: Fix comment deletion permission
 - 2026-07-15: Update responsive design breakpoints
 - 2026-07-18: Fix bug in user follow API
+- 2026-07-20: Fix bug in user follow API
