@@ -16,3 +16,4 @@
 - 2026-07-18: Fix bug in user follow API
 - 2026-07-20: Fix bug in user follow API
 - 2026-07-22: Fix mobile layout padding
+- 2026-07-23: Update friend suggestion algorithm
