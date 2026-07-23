@@ -18,3 +18,4 @@
 - 2026-07-22: Fix mobile layout padding
 - 2026-07-23: Update friend suggestion algorithm
 - 2026-07-23: Improve styling of mobile navigation bar
+- 2026-07-24: Refactor notification rendering
