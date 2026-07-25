@@ -21,3 +21,4 @@
 - 2026-07-24: Refactor notification rendering
 - 2026-07-24: Refactor post creation logic
 - 2026-07-25: Update API response structures
+- 2026-07-25: Update database schema for notifications
