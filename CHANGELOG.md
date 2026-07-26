@@ -23,3 +23,4 @@
 - 2026-07-25: Update API response structures
 - 2026-07-25: Update database schema for notifications
 - 2026-07-26: Fix navigation active states
+- 2026-07-26: Fix profile avatar alignment issue
