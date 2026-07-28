@@ -25,3 +25,4 @@
 - 2026-07-26: Fix navigation active states
 - 2026-07-26: Fix profile avatar alignment issue
 - 2026-07-27: Add user connection list views
+- 2026-07-28: Refactor context processors
