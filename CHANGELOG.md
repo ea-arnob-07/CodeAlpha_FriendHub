@@ -27,3 +27,4 @@
 - 2026-07-27: Add user connection list views
 - 2026-07-28: Refactor context processors
 - 2026-07-30: Add environment variable configurations
+- 2026-07-30: Add like and comment functionality
