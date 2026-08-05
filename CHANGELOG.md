@@ -30,3 +30,4 @@
 - 2026-07-30: Add like and comment functionality
 - 2026-08-02: Update responsive design breakpoints
 - 2026-08-05: Fix CSRF token issues in forms
+- 2026-08-05: Fix profile avatar alignment issue
