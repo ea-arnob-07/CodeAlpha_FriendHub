@@ -31,3 +31,4 @@
 - 2026-08-02: Update responsive design breakpoints
 - 2026-08-05: Fix CSRF token issues in forms
 - 2026-08-05: Fix profile avatar alignment issue
+- 2026-08-06: Fix cross-browser compatibility issues
