@@ -20,17 +20,27 @@
 
 <br/>
 
-## ✨ Key Features
+## ✨ Comprehensive Features
 
-🔹 **Dynamic Social Feed:** Post updates, like, and comment instantly.  
-🔹 **Live Interactive Search:** Find friends in real-time with smart suggestions.  
-🔹 **Notification System:** Never miss a follow, like, or comment.  
-🔹 **Sleek Profiles:** Fully customizable profiles with avatars and cover photos.  
-🔹 **Cloud Storage:** Media files seamlessly managed using Cloudinary API.  
-🔹 **Robust Database:** High-performance data handling via PostgreSQL.  
-🔹 **Responsive Design:** Premium mobile and desktop UI built from scratch.  
+**Feed & Posts**
+🔹 **Live Photo & Text Uploads:** Instantly share your moments with text and photo posts (with live image previews).
+🔹 **Dynamic Social Feed:** Explore a personalized feed featuring posts from users you follow.
+🔹 **Likes & Comments:** Interact with friends by liking posts and adding comments instantly.
 
-<br/>
+**User Profiles & Networking**
+🔹 **Sleek Profiles:** Fully customizable profiles with custom avatars, cover photos, and bio.
+🔹 **Follow System:** Follow and unfollow users to build your personal network.
+🔹 **Live Interactive Search:** Find friends in real-time with smart, instant search suggestions.
+
+**Engagement & Experience**
+🔹 **Notification System:** Get real-time alerts for new followers, likes, and comments. 
+🔹 **Responsive Design:** Premium mobile and desktop UI built from scratch for a flawless experience on any device.
+🔹 **Secure Authentication:** Complete user registration, login, and secure session management.
+
+**Tech Stack & Infrastructure**
+🔹 **Cloud Storage:** Media files and images seamlessly managed and delivered using the Cloudinary API.
+🔹 **Robust Database:** High-performance, scalable data handling via PostgreSQL.
+🔹 **Vercel Deployment:** Fast and reliable cloud hosting.
 
 ## 🚀 Live Demo
 **🌍 [https://friend-hub-arnob.vercel.app](https://friend-hub-arnob.vercel.app)**
