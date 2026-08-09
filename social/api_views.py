@@ -142,7 +142,10 @@ def api_profile(request, username):
     serializer = ProfileSerializer(user.profile, data=request.data, partial=True, context={"request": request})
     if not serializer.is_valid():
         return fail("Please correct the profile fields.", serializer.errors)
-    profile = serializer.save()
+    try:
+        profile = serializer.save()
+    except OSError:
+        return fail("Image uploads are not supported in this demo environment.", http_status=status.HTTP_403_FORBIDDEN)
     if parse_bool(request.data.get("remove_avatar")):
         profile.avatar.delete(save=False)
         profile.avatar = ""
@@ -204,7 +207,11 @@ def api_posts(request):
     serializer = PostSerializer(data=request.data, context={"request": request})
     if not serializer.is_valid():
         return fail("The post could not be published.", serializer.errors)
-    post = serializer.save(author=request.user)
+    try:
+        post = serializer.save(author=request.user)
+    except OSError:
+        return fail("Image uploads are not supported in this demo environment.", http_status=status.HTTP_403_FORBIDDEN)
+    
     prepare_request_cache(request, [post])
     return ok(
         PostSerializer(post, context={"request": request}).data,
@@ -237,7 +244,10 @@ def api_post_detail(request, post_id):
     if remove_image and post.image:
         post.image.delete(save=False)
         post.image = ""
-    post = serializer.save()
+    try:
+        post = serializer.save()
+    except OSError:
+        return fail("Image uploads are not supported in this demo environment.", http_status=status.HTTP_403_FORBIDDEN)
     prepare_request_cache(request, [post])
     return ok(PostSerializer(post, context={"request": request}).data, "Post updated.")
 

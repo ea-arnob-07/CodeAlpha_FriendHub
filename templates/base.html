@@ -93,11 +93,8 @@
                             {% for notification in header_notifications %}
                             <a class="mini-notification {% if not notification.is_read %}is-unread{% endif %}"
                                 href="{{ notification.target_url }}" data-notification-id="{{ notification.id }}">
-                                {% include 'components/avatar.html' with person=notification.actor
-                                avatar_class='avatar-sm' %}
-                                <span><strong>{{ notification.actor.get_full_name|default:notification.actor.username
-                                        }}</strong> {{ notification.get_notification_type_display|lower }}<small>{{
-                                        notification.created_at|naturaltime }}</small></span>
+                                {% include 'components/avatar.html' with person=notification.actor avatar_class='avatar-sm' %}
+                                <span><strong>{{ notification.actor.get_full_name|default:notification.actor.username }}</strong> {{ notification.get_notification_type_display|lower }}<small>{{ notification.created_at|naturaltime }}</small></span>
                             </a>
                             {% empty %}
                             <div class="compact-empty">You’re all caught up.</div>
