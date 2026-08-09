@@ -1,0 +1,277 @@
+{% load static humanize %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Estiuk Arafat Arnob">
+    <meta name="description" content="FriendHub — a friendly place to share, connect, and belong.">
+    <meta name="theme-color" content="#2563eb">
+    <title>{% block title %}FriendHub{% endblock %}</title>
+    <link rel="icon" href="{% static 'icons/favicon.svg' %}" type="image/svg+xml">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    {% if user.is_authenticated %}
+    <header class="topbar" id="topbar">
+        <div class="topbar__inner">
+            <a class="brand" href="{% url 'social:home' %}" aria-label="FriendHub home">
+                <span class="brand__mark" aria-hidden="true">F</span>
+                <span class="brand__name">FriendHub</span>
+                <div class="mobile-credit" style="display:none; flex-direction:column; margin-left:8px; justify-content:center;">
+                    <span style="color:#9ca3af; font-size:9px; line-height:1; font-weight:500;">Developed by</span>
+                    <span style="color:var(--brand-700); font-size:11px; line-height:1.2; font-weight:750;">Estiuk Arafat Arnob</span>
+                </div>
+            </a>
+
+            <div class="global-search" data-search-root>
+                <form action="{% url 'social:search' %}" method="get" role="search">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="{% static 'icons/sprite.svg' %}#search"></use>
+                    </svg>
+                    <label class="sr-only" for="global-search-input">Search people</label>
+                    <input id="global-search-input" name="q" type="search" placeholder="Search FriendHub"
+                        autocomplete="off" value="{{ request.GET.q|default:'' }}" data-live-search>
+                </form>
+                <div class="search-popover" data-search-results hidden></div>
+            </div>
+
+            <nav class="desktop-nav" aria-label="Primary navigation">
+                <a class="nav-icon {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}"
+                    href="{% url 'social:home' %}" aria-label="Home" title="Home">
+                    <svg class="icon icon-lg" aria-hidden="true">
+                        <use href="{% static 'icons/sprite.svg' %}#home"></use>
+                    </svg>
+                </a>
+                <a class="nav-icon {% if request.resolver_match.url_name == 'search' %}is-active{% endif %}"
+                    href="{% url 'social:search' %}" aria-label="Find people" title="Find people">
+                    <svg class="icon icon-lg" aria-hidden="true">
+                        <use href="{% static 'icons/sprite.svg' %}#users"></use>
+                    </svg>
+                </a>
+            </nav>
+
+            <div class="topbar-actions">
+                <button class="circle-button mobile-search-trigger" type="button" aria-label="Open search"
+                    data-mobile-search>
+                    <svg class="icon" aria-hidden="true">
+                        <use href="{% static 'icons/sprite.svg' %}#search"></use>
+                    </svg>
+                </button>
+                <button class="circle-button" type="button" aria-label="Create a post" title="Create a post"
+                    data-modal-open="create-post-modal">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="{% static 'icons/sprite.svg' %}#plus"></use>
+                    </svg>
+                </button>
+
+                <div class="dropdown" data-dropdown>
+                    <button class="circle-button notification-button" type="button" aria-label="Notifications"
+                        aria-expanded="false" data-dropdown-toggle>
+                        <svg class="icon" aria-hidden="true">
+                            <use href="{% static 'icons/sprite.svg' %}#bell"></use>
+                        </svg>
+                        <span class="badge" data-unread-badge {% if not unread_notification_count %}hidden{% endif %}>{{
+                            unread_notification_count|default:0 }}</span>
+                    </button>
+                    <div class="dropdown-menu notification-menu" data-dropdown-menu hidden>
+                        <div class="dropdown-heading">
+                            <div>
+                                <span class="eyebrow">Activity</span>
+                                <h2>Notifications</h2>
+                            </div>
+                            {% if unread_notification_count %}
+                            <button class="text-button" type="button" data-mark-all-read>Mark all read</button>
+                            {% endif %}
+                        </div>
+                        <div class="mini-notification-list">
+                            {% for notification in header_notifications %}
+                            <a class="mini-notification {% if not notification.is_read %}is-unread{% endif %}"
+                                href="{{ notification.target_url }}" data-notification-id="{{ notification.id }}">
+                                {% include 'components/avatar.html' with person=notification.actor
+                                avatar_class='avatar-sm' %}
+                                <span><strong>{{ notification.actor.get_full_name|default:notification.actor.username
+                                        }}</strong> {{ notification.get_notification_type_display|lower }}<small>{{
+                                        notification.created_at|naturaltime }}</small></span>
+                            </a>
+                            {% empty %}
+                            <div class="compact-empty">You’re all caught up.</div>
+                            {% endfor %}
+                        </div>
+                        <a class="dropdown-footer" href="{% url 'social:notifications' %}">See all notifications</a>
+                    </div>
+                </div>
+
+                <div class="dropdown" data-dropdown>
+                    <button class="profile-trigger" type="button" aria-label="Open account menu" aria-expanded="false"
+                        data-dropdown-toggle>
+                        {% include 'components/avatar.html' with person=user avatar_class='avatar-sm' %}
+                        <span class="profile-trigger__name">{{ user.first_name|default:user.username }}</span>
+                        <svg class="icon icon-sm" aria-hidden="true">
+                            <use href="{% static 'icons/sprite.svg' %}#chevron-down"></use>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu account-menu" data-dropdown-menu hidden>
+                        <a class="account-summary" href="{% url 'social:profile' user.username %}">
+                            {% include 'components/avatar.html' with person=user avatar_class='avatar-lg' %}
+                            <span><strong>{{ user.get_full_name|default:user.username }}</strong><small>View your
+                                    profile</small></span>
+                        </a>
+                        <div class="menu-divider"></div>
+                        <a class="menu-item" href="{% url 'social:edit_profile' %}">
+                            <span class="menu-icon"><svg class="icon">
+                                    <use href="{% static 'icons/sprite.svg' %}#settings"></use>
+                                </svg></span>
+                            Edit profile
+                        </a>
+                        <a class="menu-item" href="{% url 'social:about' %}">
+                            <span class="menu-icon"><svg class="icon">
+                                    <use href="{% static 'icons/sprite.svg' %}#info"></use>
+                                </svg></span>
+                            About FriendHub
+                        </a>
+                        <form action="{% url 'social:logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="menu-item menu-item--button" type="submit">
+                                <span class="menu-icon"><svg class="icon">
+                                        <use href="{% static 'icons/sprite.svg' %}#logout"></use>
+                                    </svg></span>
+                                Log out
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    {% endif %}
+
+    <main id="main-content" class="{% if user.is_authenticated %}app-main{% else %}public-main{% endif %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% if user.is_authenticated %}
+    <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+        <a href="{% url 'social:home' %}" aria-label="Home"><svg class="icon">
+                <use href="{% static 'icons/sprite.svg' %}#home"></use>
+            </svg><span>Home</span></a>
+        <a href="{% url 'social:search' %}" aria-label="People"><svg class="icon">
+                <use href="{% static 'icons/sprite.svg' %}#users"></use>
+            </svg><span>People</span></a>
+        <button type="button" data-modal-open="create-post-modal" aria-label="Create"><span class="mobile-create"><svg
+                    class="icon">
+                    <use href="{% static 'icons/sprite.svg' %}#plus"></use>
+                </svg></span><span>Create</span></button>
+        <a href="{% url 'social:notifications' %}" aria-label="Notifications"><svg class="icon">
+                <use href="{% static 'icons/sprite.svg' %}#bell"></use>
+            </svg><span>Alerts</span></a>
+        <a href="{% url 'social:profile' user.username %}" aria-label="Profile">{% include 'components/avatar.html' with
+            person=user avatar_class='avatar-xs' %}<span>Profile</span></a>
+    </nav>
+
+    <div class="modal" id="create-post-modal" role="dialog" aria-modal="true" aria-labelledby="create-post-title"
+        hidden>
+        <div class="modal__backdrop" data-modal-close></div>
+        <div class="modal__panel">
+            <div class="modal__header">
+                <div><span class="eyebrow">Share an update</span>
+                    <h2 id="create-post-title">Create post</h2>
+                </div>
+                <button class="circle-button" type="button" aria-label="Close" data-modal-close><svg class="icon">
+                        <use href="{% static 'icons/sprite.svg' %}#x"></use>
+                    </svg></button>
+            </div>
+            <form id="create-post-form" class="post-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="composer-author">
+                    {% include 'components/avatar.html' with person=user avatar_class='avatar-md' %}
+                    <span><strong>{{ user.get_full_name|default:user.username }}</strong><small>Visible to your
+                            FriendHub network</small></span>
+                </div>
+                <label class="sr-only" for="post-content">Post content</label>
+                <textarea id="post-content" name="content" maxlength="2000"
+                    placeholder="What’s on your mind, {{ user.first_name|default:user.username }}?"
+                    data-char-counter="post-counter"></textarea>
+                <div class="image-preview" id="post-image-preview" hidden>
+                    <img alt="Selected post image preview">
+                    <button type="button" class="image-remove" aria-label="Remove image"
+                        data-clear-image="post-image"><svg class="icon">
+                            <use href="{% static 'icons/sprite.svg' %}#x"></use>
+                        </svg></button>
+                </div>
+                <div class="post-form__tools">
+                    <label class="image-picker" for="post-image">
+                        <svg class="icon">
+                            <use href="{% static 'icons/sprite.svg' %}#image"></use>
+                        </svg>
+                        Add photo
+                    </label>
+                    <input id="post-image" name="image" type="file" accept="image/jpeg,image/png,image/webp"
+                        data-image-input="post-image-preview" hidden>
+                    <span id="post-counter" class="char-counter">0 / 2000</span>
+                </div>
+                <button class="button button--primary button--block" type="submit"
+                    data-submit-label="Post">Post</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="edit-post-modal" role="dialog" aria-modal="true" aria-labelledby="edit-post-title" hidden>
+        <div class="modal__backdrop" data-modal-close></div>
+        <div class="modal__panel modal__panel--compact">
+            <div class="modal__header">
+                <div><span class="eyebrow">Make a change</span>
+                    <h2 id="edit-post-title">Edit post</h2>
+                </div>
+                <button class="circle-button" type="button" aria-label="Close" data-modal-close><svg class="icon">
+                        <use href="{% static 'icons/sprite.svg' %}#x"></use>
+                    </svg></button>
+            </div>
+            <form id="edit-post-form" class="post-form">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" id="edit-post-id">
+                <label class="sr-only" for="edit-post-content">Post content</label>
+                <textarea id="edit-post-content" name="content" maxlength="2000"
+                    data-char-counter="edit-post-counter"></textarea>
+                <label class="check-row"><input type="checkbox" name="remove_image" value="true"> Remove the current
+                    image</label>
+                <div class="post-form__tools"><span></span><span id="edit-post-counter" class="char-counter">0 /
+                        2000</span></div>
+                <button class="button button--primary button--block" type="submit" data-submit-label="Save changes">Save
+                    changes</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"
+        aria-describedby="confirm-message" hidden>
+        <div class="modal__backdrop"></div>
+        <div class="modal__panel modal__panel--confirm">
+            <div class="confirm-icon"><svg class="icon icon-lg">
+                    <use href="{% static 'icons/sprite.svg' %}#trash"></use>
+                </svg></div>
+            <h2 id="confirm-title">Are you sure?</h2>
+            <p id="confirm-message">This action cannot be undone.</p>
+            <div class="modal__actions">
+                <button class="button button--secondary" type="button" data-confirm-cancel>Cancel</button>
+                <button class="button button--danger" type="button" data-confirm-ok>Delete</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="toast-region" aria-live="polite" aria-atomic="true" data-toast-region></div>
+    {% for message in messages %}<div hidden data-flash-message data-level="{{ message.tags }}">{{ message }}</div>{% endfor %}
+
+    <script src="{% static 'js/app.js' %}" defer></script>
+    {% if user.is_authenticated %}
+    <script src="{% static 'js/feed.js' %}" defer></script>{% endif %}
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

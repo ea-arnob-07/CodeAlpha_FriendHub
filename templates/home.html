@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home · FriendHub{% endblock %}
+{% block body_class %}home-page{% endblock %}
+{% block content %}
+<div class="app-grid">
+    <aside class="left-sidebar" aria-label="Shortcuts">
+        <div class="sidebar-profile">
+            <a href="{% url 'social:profile' user.username %}">{% include 'components/avatar.html' with person=user avatar_class='avatar-xl' %}</a>
+            <div><strong>{{ user.get_full_name|default:user.username }}</strong><span>@{{ user.username }}</span></div>
+        </div>
+        <nav class="side-nav">
+            <a class="is-active" href="{% url 'social:home' %}"><span class="side-nav__icon"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#home"></use></svg></span>Home</a>
+            <a href="{% url 'social:profile' user.username %}"><span class="side-nav__icon"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#user"></use></svg></span>My profile</a>
+            <a href="{% url 'social:profile' user.username %}?tab=followers"><span class="side-nav__icon"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#users"></use></svg></span>Followers<span class="side-nav__count">{{ user.follower_links.count }}</span></a>
+            <a href="{% url 'social:profile' user.username %}?tab=following"><span class="side-nav__icon"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#heart"></use></svg></span>Following<span class="side-nav__count">{{ user.following_links.count }}</span></a>
+            <a href="{% url 'social:notifications' %}"><span class="side-nav__icon"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#bell"></use></svg></span>Notifications{% if unread_notification_count %}<span class="side-nav__count side-nav__count--accent">{{ unread_notification_count }}</span>{% endif %}</a>
+            <a href="{% url 'social:edit_profile' %}"><span class="side-nav__icon"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#settings"></use></svg></span>Settings</a>
+        </nav>
+        <div class="sidebar-footer"><a href="{% url 'social:about' %}">About</a><span>·</span><span><strong>Developed by Estiuk Arafat Arnob</strong></span></div>
+    </aside>
+
+    <section class="feed-column" aria-label="News feed">
+        <div class="welcome-strip">
+            <div><span class="eyebrow">Your daily circle</span><h1>Good {{ user.first_name|default:user.username }}, what’s happening?</h1></div>
+            <span class="welcome-strip__spark">✦</span>
+        </div>
+        <section class="card quick-composer" aria-label="Create a post">
+            {% include 'components/avatar.html' with person=user avatar_class='avatar-md' %}
+            <button class="quick-composer__input" type="button" data-modal-open="create-post-modal">What’s on your mind, {{ user.first_name|default:user.username }}?</button>
+            <button class="quick-composer__photo" type="button" data-modal-open="create-post-modal" aria-label="Create a photo post"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#image"></use></svg><span>Photo</span></button>
+        </section>
+
+        <div class="feed-list" id="feed-list">
+            {% for post in page_obj %}{% include 'components/post_card.html' with post=post %}{% empty %}
+            <div class="card empty-state" data-empty-feed>
+                <div class="empty-state__icon"><svg class="icon icon-xl"><use href="{% static 'icons/sprite.svg' %}#sparkles"></use></svg></div>
+                <h2>Your feed is ready for a first moment</h2>
+                <p>Share an update or follow people to see their posts here.</p>
+                <div class="empty-state__actions"><button class="button button--primary" type="button" data-modal-open="create-post-modal">Create a post</button><a class="button button--secondary" href="{% url 'social:search' %}">Find people</a></div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if page_obj.has_next %}<button class="button button--secondary load-more" type="button" data-load-more data-next-page="{{ page_obj.next_page_number }}">Load more moments</button>{% endif %}
+    </section>
+
+    <aside class="right-sidebar" aria-label="Suggestions">
+        <section class="card sidebar-card">
+            <div class="sidebar-card__heading"><div><span class="eyebrow">Grow your circle</span><h2>People you may know</h2></div><a href="{% url 'social:search' %}">See all</a></div>
+            <div class="suggestion-list">
+                {% for person in suggestions %}
+                <div class="suggestion" data-suggestion-user="{{ person.id }}">
+                    <a href="{% url 'social:profile' person.username %}">{% include 'components/avatar.html' with person=person avatar_class='avatar-md' %}</a>
+                    <div class="suggestion__meta"><a href="{% url 'social:profile' person.username %}">{{ person.get_full_name|default:person.username }}</a><span>@{{ person.username }}</span></div>
+                    <button class="button button--small button--soft" type="button" data-follow-id="{{ person.id }}" data-following="false">Follow</button>
+                </div>
+                {% empty %}<div class="compact-empty">You’re connected with everyone here.</div>{% endfor %}
+            </div>
+        </section>
+        <section class="card community-note">
+            <div class="community-note__icon"><svg class="icon icon-lg"><use href="{% static 'icons/sprite.svg' %}#heart"></use></svg></div>
+            <div><span class="eyebrow">FriendHub reminder</span><h2>Make the feed kinder.</h2><p>A thoughtful comment can brighten someone’s whole day.</p></div>
+        </section>
+        <p class="right-credit"><strong>Developed by Estiuk Arafat Arnob</strong></p>
+    </aside>
+</div>
+{% endblock %}

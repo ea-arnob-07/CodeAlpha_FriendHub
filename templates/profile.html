@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static humanize social_extras %}
+{% block title %}{{ profile_user.get_full_name|default:profile_user.username }} · FriendHub{% endblock %}
+{% block content %}
+<div class="profile-page">
+    <section class="profile-hero card">
+        <div class="profile-cover {% if not profile_user.profile.cover_photo %}profile-cover--default{% endif %}" {% if profile_user.profile.cover_photo %}style="background-image:url('{{ profile_user.profile.cover_photo.url }}')"{% endif %}>
+            <div class="cover-pattern" aria-hidden="true"></div>
+        </div>
+        <div class="profile-identity">
+            <div class="profile-avatar-wrap">
+                {% include 'components/avatar.html' with person=profile_user avatar_class='avatar-profile' %}
+                <span class="online-dot" title="FriendHub member"></span>
+            </div>
+            <div class="profile-title">
+                <h1>{{ profile_user.get_full_name|default:profile_user.username }}</h1>
+                <p>@{{ profile_user.username }} · {{ profile_user.follower_links.count }} follower{{ profile_user.follower_links.count|pluralize }}</p>
+                {% if profile_user.profile.bio %}<span>{{ profile_user.profile.bio }}</span>{% endif %}
+            </div>
+            <div class="profile-actions">
+                {% if profile_user == user %}
+                <button class="button button--primary" type="button" data-modal-open="create-post-modal"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#plus"></use></svg>Add post</button>
+                <a class="button button--secondary" href="{% url 'social:edit_profile' %}"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#edit"></use></svg>Edit profile</a>
+                {% else %}
+                <button class="button {% if is_following %}button--secondary{% else %}button--primary{% endif %}" type="button" data-follow-id="{{ profile_user.id }}" data-following="{% if is_following %}true{% else %}false{% endif %}">{% if is_following %}Following{% else %}Follow{% endif %}</button>
+                {% endif %}
+            </div>
+        </div>
+        <nav class="profile-tabs" aria-label="Profile sections">
+            <a class="{% if active_tab == 'posts' %}is-active{% endif %}" href="{% url 'social:profile' profile_user.username %}">Posts <span>{{ profile_user.posts.count }}</span></a>
+            <a class="{% if active_tab == 'followers' %}is-active{% endif %}" href="?tab=followers">Followers <span data-profile-follower-count>{{ profile_user.follower_links.count }}</span></a>
+            <a class="{% if active_tab == 'following' %}is-active{% endif %}" href="?tab=following">Following <span>{{ profile_user.following_links.count }}</span></a>
+            <a class="{% if active_tab == 'about' %}is-active{% endif %}" href="?tab=about">About</a>
+        </nav>
+    </section>
+
+    {% if active_tab == 'posts' %}
+    <div class="profile-grid">
+        <aside class="profile-info-column">
+            <section class="card info-card">
+                <h2>Intro</h2>
+                {% if profile_user.profile.bio %}<p class="intro-bio">{{ profile_user.profile.bio }}</p>{% endif %}
+                <ul class="intro-list">
+                    {% if profile_user.profile.location %}<li><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#location"></use></svg>Lives in <strong>{{ profile_user.profile.location }}</strong></li>{% endif %}
+                    {% if profile_user.profile.website %}<li><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#link"></use></svg><a href="{{ profile_user.profile.website }}" rel="nofollow noopener" target="_blank">{{ profile_user.profile.website|truncatechars:34 }}</a></li>{% endif %}
+                    <li><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#calendar"></use></svg>Joined {{ profile_user.date_joined|date:"F Y" }}</li>
+                </ul>
+                {% if profile_user == user %}<a class="button button--soft button--block" href="{% url 'social:edit_profile' %}">Edit details</a>{% endif %}
+            </section>
+            <section class="card info-card">
+                <div class="info-card__heading"><h2>Connections</h2><a href="?tab=followers">See all</a></div>
+                <div class="connection-faces">
+                    {% for person in followers_preview %}<a href="{% url 'social:profile' person.username %}" title="{{ person.get_full_name|default:person.username }}">{% include 'components/avatar.html' with person=person avatar_class='avatar-lg' %}<span>{{ person.first_name|default:person.username }}</span></a>{% empty %}<p class="muted">No followers yet.</p>{% endfor %}
+                </div>
+            </section>
+        </aside>
+        <section class="profile-feed" aria-label="Posts by {{ profile_user.username }}">
+            {% if profile_user == user %}
+            <section class="card quick-composer"><span>{% include 'components/avatar.html' with person=user avatar_class='avatar-md' %}</span><button class="quick-composer__input" type="button" data-modal-open="create-post-modal">Share something with your circle…</button></section>
+            {% endif %}
+            <div class="feed-list" id="feed-list">
+                {% for post in page_obj %}{% include 'components/post_card.html' with post=post %}{% empty %}
+                <div class="card empty-state"><div class="empty-state__icon"><svg class="icon icon-xl"><use href="{% static 'icons/sprite.svg' %}#sparkles"></use></svg></div><h2>No posts here yet</h2><p>{% if profile_user == user %}Your first FriendHub moment can start right now.{% else %}Check back when {{ profile_user.first_name|default:profile_user.username }} shares something.{% endif %}</p>{% if profile_user == user %}<button class="button button--primary" type="button" data-modal-open="create-post-modal">Create a post</button>{% endif %}</div>
+                {% endfor %}
+            </div>
+            {% include 'components/pagination.html' with page_obj=page_obj %}
+        </section>
+    </div>
+    {% elif active_tab == 'followers' or active_tab == 'following' %}
+    <section class="card profile-tab-panel">
+        <div class="section-heading"><div><span class="eyebrow">Connections</span><h2>{% if active_tab == 'followers' %}People following {{ profile_user.first_name|default:profile_user.username }}{% else %}People {{ profile_user.first_name|default:profile_user.username }} follows{% endif %}</h2></div></div>
+        <div class="people-grid">
+            {% for person in connection_page %}
+            <article class="person-card">
+                <a href="{% url 'social:profile' person.username %}">{% include 'components/avatar.html' with person=person avatar_class='avatar-xl' %}</a>
+                <div><a class="person-card__name" href="{% url 'social:profile' person.username %}">{{ person.get_full_name|default:person.username }}</a><span>@{{ person.username }}</span>{% if person.profile.bio %}<p>{{ person.profile.bio|truncatechars:80 }}</p>{% endif %}</div>
+                {% if person != user %}<button class="button button--small {% if viewer_following_ids|contains:person.id %}button--secondary{% else %}button--soft{% endif %}" type="button" data-follow-id="{{ person.id }}" data-following="{% if viewer_following_ids|contains:person.id %}true{% else %}false{% endif %}">{% if viewer_following_ids|contains:person.id %}Following{% else %}Follow{% endif %}</button>{% endif %}
+            </article>
+            {% empty %}<div class="empty-state empty-state--plain"><h2>No connections to show</h2><p>This list will grow as people connect.</p></div>{% endfor %}
+        </div>
+        {% include 'components/pagination.html' with page_obj=connection_page active_tab=active_tab %}
+    </section>
+    {% else %}
+    <section class="card profile-tab-panel about-profile">
+        <div class="section-heading"><div><span class="eyebrow">Profile details</span><h2>About {{ profile_user.get_full_name|default:profile_user.username }}</h2></div></div>
+        <dl class="about-list">
+            <div><dt>Username</dt><dd>@{{ profile_user.username }}</dd></div>
+            <div><dt>Bio</dt><dd>{{ profile_user.profile.bio|default:"No bio added yet." }}</dd></div>
+            <div><dt>Location</dt><dd>{{ profile_user.profile.location|default:"Not shared" }}</dd></div>
+            <div><dt>Website</dt><dd>{% if profile_user.profile.website %}<a href="{{ profile_user.profile.website }}" target="_blank" rel="noopener nofollow">{{ profile_user.profile.website }}</a>{% else %}Not shared{% endif %}</dd></div>
+            <div><dt>Member since</dt><dd>{{ profile_user.date_joined|date:"F j, Y" }}</dd></div>
+        </dl>
+    </section>
+    {% endif %}
+    <p class="profile-credit profile-credit--global"><strong>Developed by Estiuk Arafat Arnob</strong></p>
+</div>
+{% endblock %}

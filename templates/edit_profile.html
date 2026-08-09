@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Edit profile · FriendHub{% endblock %}
+{% block content %}
+<div class="content-page content-page--medium">
+    <a class="back-link" href="{% url 'social:profile' user.username %}"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#arrow-left"></use></svg>Back to profile</a>
+    <header class="page-heading"><div><span class="eyebrow">Make it yours</span><h1>Edit profile</h1><p>Update how people see you across FriendHub.</p></div></header>
+    <form class="card settings-form" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% if user_form.non_field_errors or profile_form.non_field_errors %}<div class="form-alert">Please review the highlighted fields.</div>{% endif %}
+        <section class="settings-section">
+            <div class="settings-section__heading"><span>01</span><div><h2>Profile photos</h2><p>JPG, PNG, or WebP. Maximum 5 MB each.</p></div></div>
+            <div class="photo-edit-grid">
+                <div class="photo-field">
+                    <label for="{{ profile_form.avatar.id_for_label }}">Profile picture</label>
+                    <div class="photo-preview photo-preview--avatar" id="avatar-preview">
+                        {% if user.profile.avatar %}<img src="{{ user.profile.avatar.url }}" alt="Current profile picture">{% else %}<span>{{ user.username|first|upper }}</span>{% endif %}
+                    </div>
+                    <label class="button button--soft file-button" for="{{ profile_form.avatar.id_for_label }}"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#upload"></use></svg>Choose image</label>
+                    <input id="{{ profile_form.avatar.id_for_label }}" name="avatar" type="file" accept="image/jpeg,image/png,image/webp" data-image-input="avatar-preview" hidden>
+                    {% if user.profile.avatar %}<label class="check-row check-row--small"><input type="checkbox" name="remove_avatar"> Remove current picture</label>{% endif %}
+                    {% for error in profile_form.avatar.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                </div>
+                <div class="photo-field photo-field--cover">
+                    <label for="{{ profile_form.cover_photo.id_for_label }}">Cover photo</label>
+                    <div class="photo-preview photo-preview--cover" id="cover-preview">
+                        {% if user.profile.cover_photo %}<img src="{{ user.profile.cover_photo.url }}" alt="Current cover photo">{% else %}<span>A little color for your profile</span>{% endif %}
+                    </div>
+                    <label class="button button--soft file-button" for="{{ profile_form.cover_photo.id_for_label }}"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#upload"></use></svg>Choose cover</label>
+                    <input id="{{ profile_form.cover_photo.id_for_label }}" name="cover_photo" type="file" accept="image/jpeg,image/png,image/webp" data-image-input="cover-preview" hidden>
+                    {% if user.profile.cover_photo %}<label class="check-row check-row--small"><input type="checkbox" name="remove_cover"> Remove current cover</label>{% endif %}
+                    {% for error in profile_form.cover_photo.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                </div>
+            </div>
+        </section>
+        <section class="settings-section">
+            <div class="settings-section__heading"><span>02</span><div><h2>Personal information</h2><p>Help friends recognize and connect with you.</p></div></div>
+            <div class="form-grid">
+                <div class="form-group"><label for="{{ user_form.first_name.id_for_label }}">First name</label>{{ user_form.first_name }}{% for error in user_form.first_name.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                <div class="form-group"><label for="{{ user_form.last_name.id_for_label }}">Last name</label>{{ user_form.last_name }}{% for error in user_form.last_name.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+            </div>
+            <div class="form-group"><label for="{{ user_form.email.id_for_label }}">Email address</label>{{ user_form.email }}{% for error in user_form.email.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+            <div class="form-group"><div class="label-row"><label for="{{ profile_form.bio.id_for_label }}">Bio</label><span>Up to 240 characters</span></div>{{ profile_form.bio }}{% for error in profile_form.bio.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+            <div class="form-grid">
+                <div class="form-group"><label for="{{ profile_form.location.id_for_label }}">Location</label>{{ profile_form.location }}{% for error in profile_form.location.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                <div class="form-group"><label for="{{ profile_form.website.id_for_label }}">Website</label>{{ profile_form.website }}{% for error in profile_form.website.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+            </div>
+        </section>
+        <div class="settings-actions"><a class="button button--secondary" href="{% url 'social:profile' user.username %}">Cancel</a><button class="button button--primary" type="submit">Save profile</button></div>
+    </form>
+    <p class="page-credit"><strong>Developed by Estiuk Arafat Arnob</strong></p>
+</div>
+{% endblock %}

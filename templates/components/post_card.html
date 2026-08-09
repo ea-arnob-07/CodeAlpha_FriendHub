@@ -1,0 +1,76 @@
+{% load static humanize %}
+<article class="card post-card" id="post-{{ post.id }}" data-post-id="{{ post.id }}">
+    <header class="post-card__header">
+        <a href="{% url 'social:profile' post.author.username %}" class="post-author-avatar" aria-label="View {{ post.author.username }}'s profile">
+            {% include 'components/avatar.html' with person=post.author avatar_class='avatar-md' %}
+        </a>
+        <div class="post-meta">
+            <a href="{% url 'social:profile' post.author.username %}" class="post-author">{{ post.author.get_full_name|default:post.author.username }}</a>
+            <div class="post-submeta">
+                <a href="{% url 'social:post_detail' post.pk %}">{{ post.created_at|naturaltime }}</a>
+                {% if post.is_edited %}<span>· Edited</span>{% endif %}
+                <span>·</span>
+                <svg class="icon icon-xs" aria-label="Shared with your network"><use href="{% static 'icons/sprite.svg' %}#users"></use></svg>
+            </div>
+        </div>
+        {% if post.author == user %}
+        <div class="dropdown post-menu" data-dropdown>
+            <button class="circle-button circle-button--quiet" type="button" aria-label="Post options" aria-expanded="false" data-dropdown-toggle>
+                <svg class="icon"><use href="{% static 'icons/sprite.svg' %}#more"></use></svg>
+            </button>
+            <div class="dropdown-menu dropdown-menu--right" data-dropdown-menu hidden>
+                <button class="menu-item menu-item--button" type="button" data-edit-post="{{ post.id }}" data-post-content="{{ post.content|escape }}" data-has-image="{% if post.image %}true{% else %}false{% endif %}">
+                    <span class="menu-icon"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#edit"></use></svg></span>Edit post
+                </button>
+                <button class="menu-item menu-item--button menu-item--danger" type="button" data-delete-post="{{ post.id }}">
+                    <span class="menu-icon"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#trash"></use></svg></span>Delete post
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </header>
+
+    {% if post.content %}<div class="post-content" data-post-body>{{ post.content|linebreaksbr }}</div>{% endif %}
+    {% if post.image %}<a class="post-image" href="{{ post.image.url }}" target="_blank" rel="noopener"><img src="{{ post.image.url }}" alt="Photo shared by {{ post.author.get_full_name|default:post.author.username }}" loading="lazy"></a>{% endif %}
+
+    <div class="post-stats">
+        <span class="like-summary"><span class="reaction-dot"><svg class="icon icon-xs"><use href="{% static 'icons/sprite.svg' %}#thumb"></use></svg></span><span data-like-count>{{ post.likes.count }}</span></span>
+        <button type="button" data-comment-toggle>{{ post.comments.count }} <span data-comment-word>comment{{ post.comments.count|pluralize }}</span></button>
+    </div>
+
+    <div class="post-actions">
+        <button class="post-action like-button {% if post.viewer_liked %}is-active{% endif %}" type="button" data-like-post="{{ post.id }}" aria-pressed="{% if post.viewer_liked %}true{% else %}false{% endif %}">
+            <svg class="icon"><use href="{% static 'icons/sprite.svg' %}#thumb"></use></svg><span>{% if post.viewer_liked %}Liked{% else %}Like{% endif %}</span>
+        </button>
+        <button class="post-action" type="button" data-comment-toggle>
+            <svg class="icon"><use href="{% static 'icons/sprite.svg' %}#comment"></use></svg><span>Comment</span>
+        </button>
+        <button class="post-action" type="button" data-copy-link="{% url 'social:post_detail' post.pk %}">
+            <svg class="icon"><use href="{% static 'icons/sprite.svg' %}#share"></use></svg><span>Copy link</span>
+        </button>
+    </div>
+
+    <section class="comments-panel {% if show_comments %}is-open{% endif %}" aria-label="Comments">
+        <div class="comment-list" data-comment-list>
+            {% for comment in post.preview_comments %}
+            <div class="comment" id="comment-{{ comment.id }}" data-comment-id="{{ comment.id }}">
+                <a href="{% url 'social:profile' comment.author.username %}">{% include 'components/avatar.html' with person=comment.author avatar_class='avatar-sm' %}</a>
+                <div class="comment__body">
+                    <div class="comment__bubble"><a href="{% url 'social:profile' comment.author.username %}">{{ comment.author.get_full_name|default:comment.author.username }}</a><p>{{ comment.content }}</p></div>
+                    <span>{{ comment.created_at|naturaltime }}</span>
+                </div>
+                {% if comment.author == user %}<button class="comment-delete" type="button" data-delete-comment="{{ comment.id }}" aria-label="Delete comment"><svg class="icon icon-sm"><use href="{% static 'icons/sprite.svg' %}#trash"></use></svg></button>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <form class="comment-form" data-comment-form="{{ post.id }}">
+            {% csrf_token %}
+            {% include 'components/avatar.html' with person=user avatar_class='avatar-sm' %}
+            <div class="comment-input-wrap">
+                <label class="sr-only" for="comment-input-{{ post.id }}">Write a comment</label>
+                <input id="comment-input-{{ post.id }}" name="content" maxlength="500" placeholder="Write a comment…" autocomplete="off" required>
+                <button type="submit" aria-label="Post comment"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#send"></use></svg></button>
+            </div>
+        </form>
+    </section>
+</article>

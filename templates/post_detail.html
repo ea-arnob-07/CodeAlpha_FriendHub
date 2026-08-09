@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Post by {{ post.author.get_full_name|default:post.author.username }} · FriendHub{% endblock %}
+{% block content %}
+<div class="narrow-page">
+    <a class="back-link" href="{% url 'social:home' %}"><svg class="icon"><use href="{% static 'icons/sprite.svg' %}#arrow-left"></use></svg>Back to feed</a>
+    {% include 'components/post_card.html' with post=post show_comments=True %}
+    <p class="page-credit"><strong>Developed by Estiuk Arafat Arnob</strong></p>
+</div>
+{% endblock %}

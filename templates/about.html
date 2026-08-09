@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}About · FriendHub{% endblock %}
+{% block body_class %}about-page{% endblock %}
+{% block content %}
+<div class="about-shell">
+    {% if not user.is_authenticated %}<a class="brand about-brand" href="{% url 'social:login' %}"><span class="brand__mark">F</span><span class="brand__name">FriendHub</span></a>{% endif %}
+    <section class="about-hero">
+        <span class="eyebrow">A closer kind of social</span>
+        <h1>FriendHub brings the people you care about into one warm, simple space.</h1>
+        <p>Share moments, celebrate friends, and grow meaningful connections through a thoughtfully designed social experience.</p>
+        <div class="about-actions">{% if user.is_authenticated %}<a class="button button--primary" href="{% url 'social:home' %}">Return to your feed</a>{% else %}<a class="button button--primary" href="{% url 'social:register' %}">Join FriendHub</a><a class="button button--secondary" href="{% url 'social:login' %}">Log in</a>{% endif %}</div>
+    </section>
+    <section class="about-values">
+        <article><span class="value-icon"><svg class="icon icon-lg"><use href="{% static 'icons/sprite.svg' %}#users"></use></svg></span><h2>Real connections</h2><p>Follow the people who matter and see a feed shaped around your circle.</p></article>
+        <article><span class="value-icon"><svg class="icon icon-lg"><use href="{% static 'icons/sprite.svg' %}#shield"></use></svg></span><h2>Thoughtful privacy</h2><p>Secure authentication and owner-only controls protect your profile and content.</p></article>
+        <article><span class="value-icon"><svg class="icon icon-lg"><use href="{% static 'icons/sprite.svg' %}#sparkles"></use></svg></span><h2>Simple by design</h2><p>A fast, accessible interface keeps the focus on people and moments.</p></article>
+    </section>
+    <section class="developer-card">
+        <div class="developer-monogram">EA</div>
+        <div><span class="eyebrow">Project credit</span><h2>Developed by Estiuk Arafat Arnob</h2><p>Designed and engineered as a professional full-stack social media experience.</p></div>
+    </section>
+    <section class="terms-card" id="terms">
+        <h2>Community terms & privacy</h2>
+        <p>Use FriendHub respectfully. Do not post unlawful, abusive, deceptive, or privacy-violating content. You remain responsible for what you share.</p>
+        <p>FriendHub stores account, profile, post, comment, follow, and notification data required to provide the service. Passwords are protected using Django’s secure password hashing system.</p>
+    </section>
+    <footer class="about-footer"><span>FriendHub</span><span>Developed by Estiuk Arafat Arnob</span></footer>
+</div>
+{% endblock %}

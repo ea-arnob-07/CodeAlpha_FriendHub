@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static social_extras %}
+{% block title %}Find people · FriendHub{% endblock %}
+{% block content %}
+<div class="content-page">
+    <header class="page-heading">
+        <div><span class="eyebrow">Grow your circle</span><h1>Find people</h1><p>Search by name or username and discover new connections.</p></div>
+    </header>
+    <section class="card search-page-card">
+        <form class="large-search" action="{% url 'social:search' %}" method="get" role="search">
+            <svg class="icon"><use href="{% static 'icons/sprite.svg' %}#search"></use></svg>
+            <label class="sr-only" for="people-search">Search people</label>
+            <input id="people-search" name="q" type="search" value="{{ query }}" placeholder="Try a name or @username" autofocus>
+            <button class="button button--primary" type="submit">Search</button>
+        </form>
+        {% if query %}<p class="result-summary">{{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }} for <strong>“{{ query }}”</strong></p>{% endif %}
+        <div class="people-grid people-grid--search">
+            {% for person in page_obj %}
+            <article class="person-card">
+                <a href="{% url 'social:profile' person.username %}">{% include 'components/avatar.html' with person=person avatar_class='avatar-xl' %}</a>
+                <div class="person-card__copy"><a class="person-card__name" href="{% url 'social:profile' person.username %}">{{ person.get_full_name|default:person.username }}</a><span>@{{ person.username }}</span><p>{{ person.profile.bio|default:"New to the FriendHub community."|truncatechars:90 }}</p></div>
+                {% if person != user %}<button class="button button--small {% if following_ids|contains:person.id %}button--secondary{% else %}button--soft{% endif %}" type="button" data-follow-id="{{ person.id }}" data-following="{% if following_ids|contains:person.id %}true{% else %}false{% endif %}">{% if following_ids|contains:person.id %}Following{% else %}Follow{% endif %}</button>{% else %}<a class="button button--small button--secondary" href="{% url 'social:profile' user.username %}">Your profile</a>{% endif %}
+            </article>
+            {% empty %}
+            <div class="empty-state empty-state--plain"><div class="empty-state__icon"><svg class="icon icon-xl"><use href="{% static 'icons/sprite.svg' %}#search"></use></svg></div><h2>{% if query %}No people found{% else %}Who are you looking for?{% endif %}</h2><p>{% if query %}Try a different spelling or a shorter search.{% else %}Enter a name or username to start exploring FriendHub.{% endif %}</p></div>
+            {% endfor %}
+        </div>
+        {% include 'components/pagination.html' with page_obj=page_obj query=query %}
+    </section>
+    <p class="page-credit"><strong>Developed by Estiuk Arafat Arnob</strong></p>
+</div>
+{% endblock %}

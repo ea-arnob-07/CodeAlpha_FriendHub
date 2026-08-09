@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.sqlite3
+.env
+.venv/
+venv/
+media/*
+!media/.gitkeep
+staticfiles/
+.coverage
+htmlcov/
+.pytest_cache/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,46 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Estiuk Arafat Arnob">
+    <meta name="theme-color" content="#2563eb">
+    <title>{% block title %}FriendHub{% endblock %}</title>
+    <link rel="icon" href="{% static 'icons/favicon.svg' %}" type="image/svg+xml">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="auth-page">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <main id="main-content" class="auth-shell">
+        <section class="auth-story" aria-label="About FriendHub">
+            <a class="brand brand--light" href="{% url 'social:login' %}">
+                <span class="brand__mark">F</span><span class="brand__name">FriendHub</span>
+            </a>
+            <div class="auth-story__copy">
+                <span class="auth-kicker">Your people. Your moments.</span>
+                <h1>Good connections make every day feel closer.</h1>
+                <p>Share what matters, celebrate the little things, and keep your favorite people in the loop.</p>
+                <div class="connection-visual" aria-hidden="true">
+                    <span class="visual-avatar visual-avatar--1">A</span>
+                    <span class="visual-avatar visual-avatar--2">S</span>
+                    <span class="visual-avatar visual-avatar--3">R</span>
+                    <span class="visual-avatar visual-avatar--4">M</span>
+                    <span class="visual-heart">♥</span>
+                </div>
+            </div>
+            <p class="auth-story__credit">Developed by Estiuk Arafat Arnob</p>
+        </section>
+        <section class="auth-panel">
+            <div class="auth-panel__inner">
+                <div class="mobile-brand"><span class="brand__mark">F</span><span>FriendHub</span></div>
+                {% block content %}{% endblock %}
+                <p class="auth-credit">Developed by Estiuk Arafat Arnob</p>
+            </div>
+        </section>
+    </main>
+    <div class="toast-region" aria-live="polite" data-toast-region></div>
+    {% for message in messages %}<div hidden data-flash-message data-level="{{ message.tags }}">{{ message }}</div>{% endfor %}
+    <script src="{% static 'js/app.js' %}" defer></script>
+</body>
+</html>

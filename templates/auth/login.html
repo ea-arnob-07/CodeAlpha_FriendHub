@@ -1,0 +1,31 @@
+{% extends 'auth_base.html' %}
+{% block title %}Log in · FriendHub{% endblock %}
+{% block content %}
+<div class="auth-heading">
+    <span class="eyebrow">Welcome back</span>
+    <h2>Log in to FriendHub</h2>
+    <p>Your friends and favorite moments are waiting.</p>
+</div>
+{% if form.non_field_errors %}<div class="form-alert" role="alert">{{ form.non_field_errors|striptags }}</div>{% endif %}
+<form method="post" class="auth-form" novalidate>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        <div class="input-with-icon">
+            <span aria-hidden="true">@</span>{{ form.username }}
+        </div>
+        {% for error in form.username.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    <div class="form-group">
+        <div class="label-row"><label for="{{ form.password.id_for_label }}">Password</label></div>
+        <div class="password-field">
+            {{ form.password }}
+            <button type="button" aria-label="Show password" data-password-toggle="{{ form.password.id_for_label }}">Show</button>
+        </div>
+        {% for error in form.password.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    <label class="check-row">{{ form.remember_me }} <span>Keep me logged in</span></label>
+    <button class="button button--primary button--block button--large" type="submit">Log in</button>
+</form>
+<div class="auth-switch"><span>New to FriendHub?</span><a href="{% url 'social:register' %}">Create an account</a></div>
+{% endblock %}
