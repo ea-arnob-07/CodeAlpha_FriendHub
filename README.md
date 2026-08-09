@@ -13,6 +13,8 @@
     <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
     <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
     <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+    <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+    <img src="https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white" alt="Cloudinary" />
   </p>
 </div>
 
@@ -24,6 +26,8 @@
 🔹 **Live Interactive Search:** Find friends in real-time with smart suggestions.  
 🔹 **Notification System:** Never miss a follow, like, or comment.  
 🔹 **Sleek Profiles:** Fully customizable profiles with avatars and cover photos.  
+🔹 **Cloud Storage:** Media files seamlessly managed using Cloudinary API.  
+🔹 **Robust Database:** High-performance data handling via PostgreSQL.  
 🔹 **Responsive Design:** Premium mobile and desktop UI built from scratch.  
 
 <br/>
