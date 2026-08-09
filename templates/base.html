@@ -76,8 +76,7 @@
                         <svg class="icon" aria-hidden="true">
                             <use href="{% static 'icons/sprite.svg' %}#bell"></use>
                         </svg>
-                        <span class="badge" data-unread-badge {% if not unread_notification_count %}hidden{% endif %}>{{
-                            unread_notification_count|default:0 }}</span>
+                        <span class="badge" data-unread-badge {% if not unread_notification_count %}hidden{% endif %}>{{ unread_notification_count|default:0 }}</span>
                     </button>
                     <div class="dropdown-menu notification-menu" data-dropdown-menu hidden>
                         <div class="dropdown-heading">
