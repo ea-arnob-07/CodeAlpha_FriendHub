@@ -29,7 +29,13 @@
 <br/>
 
 ## 🚀 Live Demo
-**Coming Soon to Vercel!** This project is optimized for deployment on Vercel. 
+**🌍 [https://friend-hub-arnob.vercel.app](https://friend-hub-arnob.vercel.app)**
+
+**Demo Login:**
+- **Username:** `estiuk_arnob`
+- **Password:** `Arnob1234*`
+
+*(Or you can simply create your own new account!)*
 
 <br/>
 
